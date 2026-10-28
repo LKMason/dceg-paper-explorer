@@ -1,0 +1,17 @@
+{
+  "source": "https://dceg.cancer.gov/about/organization",
+  "reviewed_on": "2026-10-15",
+  "notes": "Full branch names require NCI/NIH institutional context. Acronyms alone are review signals. CGR/Leidos is a collaborator, not automatically DCEG. Historical names need separately sourced additions.",
+  "branches": [
+    {"name": "Biostatistics Branch", "code": "BB"},
+    {"name": "Clinical Genetics Branch", "code": "CGB"},
+    {"name": "Infections and Immunoepidemiology Branch", "code": "IIB"},
+    {"name": "Integrative Tumor Epidemiology Branch", "code": "ITEB"},
+    {"name": "Laboratory of Translational Genomics", "code": "LTG"},
+    {"name": "Metabolic Epidemiology Branch", "code": "MEB"},
+    {"name": "Occupational and Environmental Epidemiology Branch", "code": "OEEB"},
+    {"name": "Radiation Epidemiology Branch", "code": "REB"},
+    {"name": "Laboratory of Genetic Susceptibility", "code": "LGS"},
+    {"name": "Data Science and Engineering Research Group", "code": "DSERG"}
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "preprints": "separate",
+  "conference_abstracts": "separate",
+  "notes": "Preprints separated at the user's request. Conference abstracts provisionally separated from full papers pending the optional scope preference; no records are discarded."
+}

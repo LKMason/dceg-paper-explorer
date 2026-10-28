@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+data/raw/
+data/*.sqlite*
+data/snapshots/
+exports/
+.DS_Store
+.venv-embeddings/
+.cache/
+node_modules/

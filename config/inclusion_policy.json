@@ -1,0 +1,11 @@
+{
+  "id": "dceg_endpoints_or_nih_first_2026-10-22",
+  "adopted_on": "2026-10-22",
+  "definition": "Include when a first-listed or documented co-first author, or the last-listed author, has verified DCEG membership around publication; otherwise include when any author has verified DCEG membership and the first-listed author reports an NIH affiliation on the paper.",
+  "membership_evidence": ["published_author_affiliation", "paper_specific_verified_historical_membership", "researcher_confirmation"],
+  "former_member_policy": "After departure, require a paper-specific DCEG link or researcher confirmation. Former employment alone is insufficient.",
+  "date_policy": "Earliest known publication date; no arbitrary appointment grace period. Unclear timing remains unresolved.",
+  "collective_authors": "Do not substitute a consortium's preceding author for the last-listed author. Collective endpoints require review unless another inclusion route qualifies.",
+  "nih_affiliation_sources": ["https://www.nih.gov/institutes-nih/list-institutes-centers", "https://www.nih.gov/institutes-nih/nih-office-director"],
+  "notes": "NIH funding, an NIH email alone, and former NIH affiliation alone do not satisfy the first-author NIH requirement. Publication types and source-discovery cutoff remain separate policies."
+}

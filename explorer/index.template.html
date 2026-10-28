@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Explore DCEG research papers, semantic neighborhoods, and three-dimensional embeddings in your browser.">
+  <title>DCEG / Paper explorer</title>
+  <!--__TEMPLATE_REDIRECT_START__-->
+  <script>location.replace(new URL('../index.html', location.href));</script>
+  <!--__TEMPLATE_REDIRECT_END__-->
+  <style>/*__EXPLORER_STYLES__*/</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="masthead">
+    <div class="brandmark" aria-hidden="true"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="square" stroke-linejoin="miter" focusable="false"><path d="M6 2.5h8l4.5 5v14H6z"/><path d="M14 2.5v5h4.5M9 11.5h6M9 15h6M9 18.5h4"/></svg></div>
+    <div class="brand">DCEG / Paper explorer<span>RESEARCH IN CONTEXT</span></div>
+    <div class="header-actions"><span class="prototype">PROTOTYPE</span><a href="exports/browse.html" class="archive-link">Publication browser ↗</a><button id="help-button" aria-label="About this explorer">?</button></div>
+  </header>
+  <nav class="mode-bar" aria-label="Explorer mode"><div class="mode-switch"><button type="button" data-mode="search" aria-pressed="true">Search</button><button type="button" data-mode="neighbors" aria-pressed="false">Neighbors</button><button type="button" data-mode="compare" aria-pressed="false">Compare</button><button type="button" data-mode="add" aria-pressed="false">Add paper</button><button type="button" data-mode="buddy" aria-pressed="false">Paper buddy</button></div><span id="mode-hint">Find papers by meaning, researcher, or branch.</span></nav>
+  <section class="search-zone" aria-label="Search the collection">
+    <form id="search-form" class="search-row" role="search">
+      <div class="search-wrap"><div class="search-box"><span class="query-letter query-a" id="query-a-label" aria-hidden="true" hidden>A</span><span class="search-icon" aria-hidden="true"></span><input id="search" type="search" placeholder="Explore an idea, researcher, or branch…" aria-label="Search papers, researchers, or branches" aria-controls="suggestions" aria-expanded="false" autocomplete="off" maxlength="1000"><span class="query-type" id="query-type-a" hidden>Meaning</span><span class="key" aria-hidden="true">↵</span></div><div id="suggestions" class="suggestions" aria-label="Search suggestions" hidden></div></div>
+      <div class="search-wrap" id="query-b-wrap" hidden><div class="search-box"><span class="query-letter query-b" aria-hidden="true">B</span><input id="search-b" type="search" placeholder="Second idea, author, or branch…" aria-label="Query B" aria-controls="suggestions-b" aria-expanded="false" autocomplete="off" maxlength="1000"><span class="query-type" id="query-type-b" hidden>Meaning</span><span class="key" aria-hidden="true">↵</span></div><div id="suggestions-b" class="suggestions" aria-label="Query B suggestions" hidden></div></div>
+      <button class="search-go" type="submit" id="search-submit">Search ↗</button>
+    </form>
+    <form id="pmid-form" class="search-row" hidden>
+      <div class="search-wrap"><div class="search-box"><label class="pmid-label" for="pmid">PMID</label><input id="pmid" type="text" inputmode="numeric" placeholder="Enter a PubMed ID, e.g. 11748933" autocomplete="off" maxlength="100" aria-describedby="pmid-hint"><span class="key" aria-hidden="true">↵</span></div></div>
+      <button class="search-go" type="submit" id="pmid-submit">Add to space ↗</button>
+    </form>
+    <form id="buddy-form" class="buddy-form" hidden>
+      <div class="search-row"><div class="search-wrap"><div class="search-box"><label class="pmid-label" for="buddy-author">AUTHOR</label><input id="buddy-author" type="search" placeholder="Your name, or choose another author…" aria-label="Find an author’s paper buddy" aria-controls="buddy-suggestions" aria-expanded="false" autocomplete="off" maxlength="300"><span class="key" aria-hidden="true">↵</span></div><div id="buddy-suggestions" class="suggestions" aria-label="Author suggestions" hidden></div></div><button type="submit" class="search-go" id="buddy-submit">Find paper buddy ↗</button><button type="button" id="buddy-cancel" hidden>Cancel</button></div>
+      <div class="buddy-options"><label for="buddy-minimum">Candidate papers <select id="buddy-minimum"><option value="1">1+</option><option value="3" selected>3+</option><option value="5">5+</option><option value="10">10+</option></select></label><label for="buddy-epsilon">Smoothing ε <select id="buddy-epsilon"><option value="0.05" selected>0.05</option><option value="0.1">0.10</option><option value="0.2">0.20</option></select></label><label><input type="checkbox" id="buddy-exclude"> Exclude existing coauthors</label><button type="button" class="text-button" id="buddy-method">How matching works ↗</button></div>
+    </form>
+    <div id="buddy-status" class="buddy-status" role="status" hidden></div>
+    <div id="pmid-hint" class="search-hint" hidden>Any PubMed paper · title and available abstract · saved in this browser.<span>First new paper loads the local embedding model (~230 MB).</span></div>
+    <div id="pmid-status" class="pmid-status" role="status" aria-live="polite" hidden><span id="pmid-message"></span><button type="button" id="pmid-neighbors" class="text-button" hidden>Explore neighbors ↗</button></div>
+    <div class="search-hint"><span>Search by meaning.</span><span>Try</span><button data-example="polygenic risk">polygenic risk</button><span>·</span><button data-example="Radiation">Radiation</button><span>·</span><button data-example="Morton">Morton</button><button id="demo-queries" class="demo-queries">Demo topics ▾</button><span id="model-status" class="model-status">Runs in your browser</span></div>
+  </section>
+  <div id="search-state" class="search-state" hidden><span id="search-label"></span><button id="show-results" class="text-button" aria-expanded="false" aria-controls="search-results"></button><span id="search-progress" role="status"></span><button id="clear-search" class="text-button clear-search">Clear search ×</button></div>
+  <div id="search-results" class="search-results" aria-label="Search results" hidden></div>
+  <div id="error" class="error" role="alert" hidden><span></span><button id="dismiss-error" aria-label="Dismiss error">×</button></div>
+  <main id="workspace" class="workspace">
+    <section class="map-area" aria-label="Research landscape">
+      <div class="map-tools"><span class="eyebrow">Projection</span><div class="segments" aria-label="Dimensionality reduction"><button data-projection="umap" aria-pressed="true">UMAP</button><button data-projection="tsne" aria-pressed="false">t-SNE</button><button data-projection="pca" aria-pressed="false">PCA</button></div><div class="color-control"><label for="color-by" id="color-label">Color by</label><select id="color-by"><option value="year">Publication year</option><option value="branch">Branch</option><option value="author">First author</option></select><span id="mode-color" hidden>Search relevance</span></div></div>
+      <div id="plot" class="plot">
+        <div class="plot-title">The research landscape<span id="plot-subtitle">LOADING PAPERS…</span></div>
+        <canvas id="canvas" tabindex="0" aria-label="Three-dimensional paper embeddings. Drag to rotate, scroll to zoom, click a paper to inspect. Use arrow keys to rotate, plus and minus to zoom, and N for the next paper."></canvas>
+        <div class="plot-actions"><button id="reset-view">⌗ <span>Reset view</span></button><button id="expand-plot" aria-label="Expand plot" aria-pressed="false">⤢</button></div>
+        <div id="plot-tooltip" class="plot-tooltip" role="tooltip" hidden></div>
+        <div class="axis-key" aria-hidden="true">3D</div><div class="map-hint">DRAG TO ROTATE · SCROLL TO ZOOM</div>
+        <div id="loading" class="plot-loading" role="status">Loading the research landscape…</div>
+      </div>
+      <div id="legend" class="legend" aria-label="Point colors"></div>
+    </section>
+    <aside id="neighbors" class="neighbors" aria-label="Search results">
+      <div class="neighbor-head"><h1 id="list-heading">Search results</h1><p id="list-subtitle">Your ranked results appear here.</p></div>
+      <div class="seed-ref" id="seed-ref" hidden><span class="letter">A</span><span id="seed-citation">Select a paper in the plot</span></div>
+      <div class="set-filters" id="set-filters" aria-label="Compare result sets" hidden><button type="button" data-set-filter="all" aria-pressed="true">All <span data-set-count="all">0</span></button><button type="button" data-set-filter="a" aria-pressed="false">A only <span data-set-count="a">0</span></button><button type="button" data-set-filter="both" aria-pressed="false">Both <span data-set-count="both">0</span></button><button type="button" data-set-filter="b" aria-pressed="false">B only <span data-set-count="b">0</span></button></div>
+      <div class="neighbor-labels"><span>PAPER</span><span id="list-value-heading">SIMILARITY</span></div><div id="neighbor-list" class="neighbor-list"></div>
+      <div class="neighbor-foot" id="list-instructions">Select a result to read the paper.<span>Original 768-dimensional embeddings</span></div>
+    </aside>
+    <aside id="inspector" class="inspector" aria-label="Paper details">
+      <div class="inspector-head"><h1>Paper details</h1><span id="detail-count" aria-live="polite">SELECT A PAPER</span></div>
+      <div id="compare-bar" class="compare-bar" hidden><span>A + B</span><span id="compare-distance"></span><button id="end-compare" class="text-button">Clear B ×</button></div>
+      <div class="text-tabs" aria-label="Paper information"><button data-tab="text" aria-pressed="true">Embedded text</button><button data-tab="meta" aria-pressed="false">Metadata</button></div>
+      <div id="paper-scroll" class="paper-scroll" aria-label="Selected papers"></div>
+    </aside>
+  </main>
+  <footer class="status-bar"><span id="data-status" class="live">Loading collection</span><span>EmbeddingGemma 2 · 768 → 3 dimensions</span><span class="footer-right">DCEG / NCI</span></footer>
+</div>
+<dialog id="about"><form method="dialog"><button class="dialog-close" aria-label="Close about dialog">×</button></form><p class="eyebrow">DCEG / PAPER EXPLORER</p><h2>A landscape of research</h2><p>Each point is one paper’s title and available abstract. Drag to rotate the map, or switch projections to see a different view of the same collection.</p><p><strong>Search:</strong> highlight a query and browse its ranked results in the list panel. Select a paper to read its details.</p><p><strong>Neighbors:</strong> select paper A to explore its nearest papers. Choose a neighbor to read A and B together; “Make A” moves your starting point to B. The search bar can find a starting paper. Neighborhood colors override all other coloring: A is black, the ten nearest papers are blue, B is coral, and other papers are faded.</p><p><strong>Compare:</strong> search for two ideas, authors, groups, or branches. Semantic queries contribute their top 50 papers; author, group, and branch suggestions contribute all exact matches. Blue marks A only, coral marks B only, and black marks papers in both sets. Filter the list by any of those sets. Switching modes preserves each mode’s work.</p><p><strong>Add paper:</strong> enter any PubMed ID. An existing paper is highlighted; a new record is fetched from PubMed and embedded locally using its title and available abstract. Additions join every mode and are saved in this browser. PCA uses the fitted transform; new UMAP and t-SNE positions are estimated from nearby base papers. Neighbor distances use the full embeddings. New-paper embeddings use the quantized browser model, so they may differ slightly from the base papers’ full-precision embeddings.</p><p id="buddy-explanation"><strong>Paper buddy:</strong> each author is a uniform distribution over all their papers in this collection. Candidates are ranked by debiased Sinkhorn divergence using the original 768-dimensional embeddings, with cosine ground cost (half the squared Euclidean distance for normalized vectors). Lower is closer. Every paper gets equal weight within its author’s portfolio. The score is OTε(A,B) − ½OTε(A,A) − ½OTε(B,B), including the entropic penalty in each OT term. Smoothing ε defaults to 0.05; the candidate minimum defaults to three papers. Shared papers are retained; optionally exclude all existing coauthors. Blue shows the source author, coral the selected buddy, and black their shared papers. Names are used as published, without identity disambiguation; profiles cover this collection, not an author’s entire publication history. Sparse portfolios give limited evidence. <a href="https://proceedings.mlr.press/v89/feydy19a.html" target="_blank" rel="noopener">Method: Feydy et al. (2019)</a>.</p><p>Neighbor distances use the original 768-dimensional vectors, independently of the 3D projection. Papers can have multiple branch annotations; missing branch information is shown as unlisted.</p><h3>Search stays in your browser</h3><p>The demo topics have real, precomputed query embeddings and work offline. New queries download a quantized EmbeddingGemma 2 text model (about 230 MB including its tokenizer and runtime) on first use. Inference and ranking then run locally; queries and paper text are never uploaded.</p><p>Use a recent Chrome or Edge for WebGPU acceleration. A slower WebAssembly fallback is available. Quantized browser queries can produce slightly different rankings from the full-precision precomputed demo queries.</p><div id="demo-topic-list" class="demo-topic-list"></div><p class="dialog-small" id="dataset-note"></p></dialog>
+<script id="explorer-data" type="application/json">/*__EXPLORER_DATA__*/</script>
+<script id="search-worker-source" type="text/plain">/*__SEARCH_WORKER__*/</script>
+<script id="buddy-math-source" type="text/plain">/*__BUDDY_MATH__*/</script>
+<script id="buddy-worker-source" type="text/plain">/*__BUDDY_WORKER__*/</script>
+<script id="browser-runtime-source" type="text/plain">/*__BROWSER_RUNTIME__*/</script>
+<script>/*__EXPLORER_AUTOCOMPLETE__*/</script>
+<script>/*__EXPLORER_MODES__*/</script>
+<script>/*__EXPLORER_PUBMED__*/</script>
+<script>/*__EXPLORER_SPACE__*/</script>
+<script>/*__EXPLORER_APP__*/</script>
+<!--__THIRD_PARTY_NOTICES__-->
+</body>
+</html>

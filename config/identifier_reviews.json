@@ -1,0 +1,10 @@
+{
+  "pmid_redirects": {
+    "40471647": {
+      "canonical_pmid": "42564971",
+      "reviewed_on": "2026-10-15",
+      "note": "Reviewed EHP citation republication/reindexing: exact normalized title and all 15 authors in identical order match the retained DCEG record. Old PMID 40471647 and DOI 10.1289/EHP16582 correspond to canonical PubMed PMID 42564971 and DOI 10.1021/ehp.6c00169. Preserve both old identifiers as aliases rather than counting a second paper.",
+      "sources": ["https://pubmed.ncbi.nlm.nih.gov/42564971/", "https://doi.org/10.1021/ehp.6c00169", "https://dceg2.cancer.gov/publications/"]
+    }
+  }
+}
